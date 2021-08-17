@@ -1,0 +1,187 @@
+# Constraint file describing luciferase active site geometry
+# Geometry is based on Yeh's initial luciferase design
+
+###########################################################################
+#  BLOCK 1: Arg stabilizes partial negative charge on substrate nitrogen  #
+###########################################################################
+CST::BEGIN
+
+  TEMPLATE::   ATOM_MAP: 1 atom_name: N1 C2 C4
+  TEMPLATE::   ATOM_MAP: 1 residue3: lig
+
+  TEMPLATE::   ATOM_MAP: 2 atom_type: Narg  # check outputs with this, half should be wrong for torsion_B
+  TEMPLATE::   ATOM_MAP: 2 residue3: ARG
+
+  CONSTRAINT::  distanceAB:    2.9   0.3  100.0    0  0
+  CONSTRAINT::     angle_A:  116.0  10.0   50.0  360  1
+  CONSTRAINT::     angle_B:  120.0  10.0   50.0  360  1
+  CONSTRAINT::   torsion_A:  111.4  10.0   25.0  360  1
+  CONSTRAINT::   torsion_B:  177.2  20.0    0.0  360  1
+  CONSTRAINT::  torsion_AB: -107.0  30.0    0.0  180  1
+
+CST::END
+################################ #
+# BLOCK 2: ASP/GLU H-BOND TO ARG #
+##################################
+VARIABLE_CST::BEGIN
+
+CST::BEGIN
+  
+  TEMPLATE::  ATOM_MAP: 1 atom_name: NE CZ NH1
+  TEMPLATE::  ATOM_MAP: 1 residue3: ARG
+  
+  TEMPLATE::  ATOM_MAP: 2 atom_type: OOC
+  TEMPLATE::  ATOM_MAP: 2 residue1: DE
+  
+  CONSTRAINT::  distanceAB:    2.7   0.3  100.0    0  0
+  CONSTRAINT::     angle_A:  136.0  16.0   50.0  360  0 
+  CONSTRAINT::     angle_B:  126.0  16.0   50.0  360  0
+  #CONSTRAINT::   torsion_A:  -23.1  10.0   25.0  360  0
+  #CONSTRAINT::   torsion_B:  135.5  20.0    0.0  360  0
+  #CONSTRAINT::  torsion_AB: -153.9  90.0    0.0  180  0
+   
+ALGORITHM_INFO:: match
+  SECONDARY_MATCH: UPSTREAM_CST 1
+  MAX_DUNBRACK_ENERGY 5.0
+ALGORITHM_INFO::END
+
+CST::END
+
+CST::BEGIN
+  
+  TEMPLATE::  ATOM_MAP: 1 atom_name: NE CZ NH2
+  TEMPLATE::  ATOM_MAP: 1 residue3: ARG
+  
+  TEMPLATE::  ATOM_MAP: 2 atom_type: OOC
+  TEMPLATE::  ATOM_MAP: 2 residue1: DE
+  
+  CONSTRAINT::  distanceAB:    2.7   0.3  100.0    0  0
+  CONSTRAINT::     angle_A:  136.0  16.0   50.0  360  0 
+  CONSTRAINT::     angle_B:  126.0  16.0   50.0  360  0
+  #CONSTRAINT::   torsion_A:  -23.1  10.0   25.0  360  0
+  #CONSTRAINT::   torsion_B:  135.5  20.0    0.0  360  0
+  #CONSTRAINT::  torsion_AB: -153.9  90.0    0.0  180  0
+   
+ALGORITHM_INFO:: match
+  SECONDARY_MATCH: UPSTREAM_CST 1
+  MAX_DUNBRACK_ENERGY 5.0
+ALGORITHM_INFO::END
+
+CST::END
+
+VARIABLE_CST::END
+####################################################################################
+#  BLOCK 3: His or Asn/Gln stabilizes partial negative charge on substrate oxygen  #
+####################################################################################
+
+# First variant: O1 charge stabilization by histidine
+
+VARIABLE_CST::BEGIN
+  
+  CST::BEGIN
+  
+    TEMPLATE::   ATOM_MAP: 1 atom_name: O1 C12 C11
+    TEMPLATE::   ATOM_MAP: 1 residue3: lig
+    
+    TEMPLATE::   ATOM_MAP: 2 atom_type: Ntrp
+    TEMPLATE::   ATOM_MAP: 2 residue3: HIS
+  
+    CONSTRAINT::  distanceAB:    2.8   0.2  100.0    0  0
+    CONSTRAINT::     angle_A:  145.0  10.0   50.0  360  0 
+    CONSTRAINT::     angle_B:  135.0  10.0   50.0  360  0
+   # CONSTRAINT::   torsion_A:  137.8  90.0    0.0  180  0
+   # CONSTRAINT::   torsion_B: -176.6   5.0   50.0  180  0
+   # CONSTRAINT::  torsion_AB:   19.8  90.0    0.0  180  0
+  
+  ALGORITHM_INFO:: match
+    SECONDARY_MATCH: DOWNSTREAM
+    MAX_DUNBRACK_ENERGY 2.5
+  ALGORITHM_INFO::END
+  CST::END
+  
+  # Second variant: O1 charge stabilization by asparagine or glutamine
+  
+  CST::BEGIN
+  
+    TEMPLATE::   ATOM_MAP: 1 atom_name: O1 C12 C11
+    TEMPLATE::   ATOM_MAP: 1 residue3: lig
+  
+    TEMPLATE::   ATOM_MAP: 2 atom_type: NH2O
+    TEMPLATE::   ATOM_MAP: 2 residue1: NQ
+  
+    CONSTRAINT::  distanceAB:    2.9   0.2  100.0    0  0
+    CONSTRAINT::     angle_A:  145.0  10.0   50.0  360  0 
+    CONSTRAINT::     angle_B:  135.0  10.0   50.0  360  0
+    #CONSTRAINT::   torsion_A:  100.0  30.0   25.0  180  0
+    #CONSTRAINT::   torsion_B:  180.0  20.0   25.0  180  0
+    #CONSTRAINT::  torsion_AB:    0.0  30.0    0.0  180  0
+  
+  ALGORITHM_INFO:: match
+    SECONDARY_MATCH: DOWNSTREAM
+    MAX_DUNBRACK_ENERGY 2.5
+  ALGORITHM_INFO::END
+  CST::END
+  
+  CST::BEGIN
+  
+    TEMPLATE::   ATOM_MAP: 1 atom_name: O1 C12 C11
+    TEMPLATE::   ATOM_MAP: 1 residue3: lig
+  
+    TEMPLATE::   ATOM_MAP: 2 atom_type: OH
+    TEMPLATE::   ATOM_MAP: 2 residue1: STY
+  
+    CONSTRAINT::  distanceAB:    2.9   0.2  100.0    0  0
+    CONSTRAINT::     angle_A:  145.0  10.0   50.0  360  0 
+    CONSTRAINT::     angle_B:  135.0  10.0   50.0  360  0
+    #CONSTRAINT::   torsion_A:  100.0  30.0   25.0  180  0
+    #CONSTRAINT::   torsion_B:  180.0  20.0   25.0  180  0
+    #CONSTRAINT::  torsion_AB:    0.0  30.0    0.0  180  0
+  
+  ALGORITHM_INFO:: match
+    SECONDARY_MATCH: DOWNSTREAM
+    MAX_DUNBRACK_ENERGY 2.5
+  ALGORITHM_INFO::END
+  CST::END
+
+  CST::BEGIN
+  
+    TEMPLATE::   ATOM_MAP: 1 atom_name: O1 C12 C11
+    TEMPLATE::   ATOM_MAP: 1 residue3: lig
+  
+    TEMPLATE::   ATOM_MAP: 2 atom_type: Narg
+    TEMPLATE::   ATOM_MAP: 2 residue1: R
+  
+    CONSTRAINT::  distanceAB:    2.9   0.2  100.0    0  0
+    CONSTRAINT::     angle_A:  145.0  10.0   50.0  360  0 
+    CONSTRAINT::     angle_B:  135.0  10.0   50.0  360  0
+    #CONSTRAINT::   torsion_A:  100.0  30.0   25.0  180  0
+    #CONSTRAINT::   torsion_B:  180.0  20.0   25.0  180  0
+    #CONSTRAINT::  torsion_AB:    0.0  30.0    0.0  180  0
+  
+  ALGORITHM_INFO:: match
+    SECONDARY_MATCH: DOWNSTREAM
+    MAX_DUNBRACK_ENERGY 2.5
+  ALGORITHM_INFO::END
+  CST::END
+
+  CST::BEGIN
+  
+    TEMPLATE::   ATOM_MAP: 1 atom_name: O1 C12 C11
+    TEMPLATE::   ATOM_MAP: 1 residue3: lig
+  
+    TEMPLATE::   ATOM_MAP: 2 atom_type: Nlys
+    TEMPLATE::   ATOM_MAP: 2 residue1: K
+  
+    CONSTRAINT::  distanceAB:    2.9   0.2  100.0    0  0
+    CONSTRAINT::     angle_A:  145.0  10.0   50.0  360  0 
+    CONSTRAINT::     angle_B:  135.0  10.0   50.0  360  0
+    #CONSTRAINT::   torsion_A:  100.0  30.0   25.0  180  0
+    #CONSTRAINT::   torsion_B:  180.0  20.0   25.0  180  0
+    #CONSTRAINT::  torsion_AB:    0.0  30.0    0.0  180  0
+  
+  ALGORITHM_INFO:: match
+    SECONDARY_MATCH: DOWNSTREAM
+    MAX_DUNBRACK_ENERGY 2.5
+  ALGORITHM_INFO::END
+  CST::END
+VARIABLE_CST::END
