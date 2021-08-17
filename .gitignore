@@ -1,4 +1,5 @@
-__pychache_
+__pychache__
 example_notebooks/logs/*
 example_notebooks/out/*
+example_notebooks/out/.ipynb_checkpoints
 _
