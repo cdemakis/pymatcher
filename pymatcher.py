@@ -55,6 +55,9 @@ def matcher(**kwargs):
         [build_pts.append(r) for r in kwargs["-match_pos"]]
         matcher_task.set_original_scaffold_build_points(build_pts)
         print("Build points overwritten according to kwargs[\"-match_pos\"].")
+        pos=kwargs["-match_pos"]
+    else:
+        pos=pyrosetta.rosetta.basic.options.get_file_option("match:scaffold_active_site_residues")
 
     matcher_start_time=time.time()
     matcher = pyrosetta.rosetta.protocols.match.Matcher()
