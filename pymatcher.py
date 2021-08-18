@@ -88,7 +88,7 @@ def matcher(**kwargs):
             matchedpose = scaffold.clone()
             match_proc.output_writer().insert_match_into_pose(matchedpose, m)
             theozyme=get_theozyme_resis(matchedpose)
-            matcher_data=json.dumps({"match_group":m, "theozyme":theozyme, "ligand":kwargs["-lig_name"], "scaffold":scaffold_name, "cst_file":pyrosetta.rosetta.basic.options.get_file_option("match:geometric_constraint_file")})
+            matcher_data=json.dumps({"match_group":m, "theozyme":theozyme, "ligand":kwargs["-lig_name"], "scaffold":scaffold_name, "cst_file":pyrosetta.rosetta.basic.options.get_file_option("match:geometric_constraint_file"), "matchable_positions":pos})
             pyrosetta.rosetta.core.pose.setPoseExtraScore(matchedpose,"matcher_data",matcher_data)
             poselist.append(matchedpose)
     else:
