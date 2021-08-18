@@ -8,12 +8,22 @@ def matcher(**kwargs):
     
     matcher_task = pyrosetta.rosetta.protocols.match.MatcherTask()
     
-    if kwargs["-s"] is None:
+    if kwargs["-s"] is None and kwargs["-pose_in"] is None:
         print("No input scaffolds.  Please use kwargs[-s] to provide input structures.")
         return poselist
 
-    scaffold = pyrosetta.pose_from_pdb(kwargs["-s"])
+    if kwargs["-pose_in"] is None:
+        scaffold = pyrosetta.pose_from_pdb(kwargs["-s"])
+    else:
+        scaffold = kwargs["-pose_in"]
     scaffold.update_residue_neighbors()
+
+    if kwargs["-scaffold_name"] is not None:
+        scaffold_name=kwargs["-scaffold_name"]
+    elif kwargs["-s"] is not None:
+        scaffold_name=kwargs["-s"]
+    else:
+        scaffold_name=""
 
     ligpose = pyrosetta.rosetta.core.pose.Pose()
     chem_mng = (
@@ -39,7 +49,13 @@ def matcher(**kwargs):
     matcher_task.set_upstream_pose(scaffold)
 
     matcher_task.initialize_from_command_line()
-   
+  
+    if kwargs["-match_pos"] is not None:
+        build_pts = pyrosetta.rosetta.utility.vector1_unsigned_long()
+        [build_pts.append(r) for r in kwargs["-match_pos"]]
+        matcher_task.set_original_scaffold_build_points(build_pts)
+        print("Build points overwritten according to kwargs[\"-match_pos\"].")
+
     matcher_start_time=time.time()
     matcher = pyrosetta.rosetta.protocols.match.Matcher()
     matcher.initialize_from_task(matcher_task)
@@ -69,7 +85,7 @@ def matcher(**kwargs):
             matchedpose = scaffold.clone()
             match_proc.output_writer().insert_match_into_pose(matchedpose, m)
             theozyme=get_theozyme_resis(matchedpose)
-            matcher_data=json.dumps({"match_group":m, "theozyme":theozyme, "ligand":kwargs["-lig_name"], "scaffold":kwargs["-s"], "cst_file":pyrosetta.rosetta.basic.options.get_file_option("match:geometric_constraint_file")})
+            matcher_data=json.dumps({"match_group":m, "theozyme":theozyme, "ligand":kwargs["-lig_name"], "scaffold":scaffold_name, "cst_file":pyrosetta.rosetta.basic.options.get_file_option("match:geometric_constraint_file")})
             pyrosetta.rosetta.core.pose.setPoseExtraScore(matchedpose,"matcher_data",matcher_data)
             poselist.append(matchedpose)
     else:
