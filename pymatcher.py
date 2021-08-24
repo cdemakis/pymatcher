@@ -8,19 +8,19 @@ def matcher(**kwargs):
     
     matcher_task = pyrosetta.rosetta.protocols.match.MatcherTask()
     
-    if kwargs["-s"] is None and kwargs["-pose_in"] is None:
+    if "-s" not in kwargs.keys() and "-pose_in" not in kwargs.keys():
         print("No input scaffolds.  Please use kwargs[-s] to provide input structures.")
         return poselist
 
-    if kwargs["-pose_in"] is None:
+    if "-pose_in" not in kwargs.keys():
         scaffold = pyrosetta.pose_from_pdb(kwargs["-s"])
     else:
         scaffold = kwargs["-pose_in"]
     scaffold.update_residue_neighbors()
 
-    if kwargs["-scaffold_name"] is not None:
+    if "-scaffold_name" in kwargs.keys():
         scaffold_name=kwargs["-scaffold_name"]
-    elif kwargs["-s"] is not None:
+    elif "-s" in kwargs.keys():
         scaffold_name=kwargs["-s"]
     else:
         scaffold_name=""
@@ -50,7 +50,7 @@ def matcher(**kwargs):
 
     matcher_task.initialize_from_command_line()
   
-    if kwargs["-match_pos"] is not None:
+    if "-match_pos" in kwargs.keys():
         build_pts = pyrosetta.rosetta.utility.vector1_unsigned_long()
         [build_pts.append(r) for r in kwargs["-match_pos"]]
         matcher_task.set_original_scaffold_build_points(build_pts)
