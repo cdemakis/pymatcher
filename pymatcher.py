@@ -79,7 +79,7 @@ def matcher(**kwargs):
         resis = {}
         for line in ss.str().splitlines():
             if "REMARK 666" in line:
-                resis[line.strip().split()[-3]] = line.strip().split()[-4]
+                resis[line.strip().split()[-3]] = [line.strip().split()[-4], line.strip().split()[-2], line.strip().split()[-1]]
     
         return resis
 
@@ -96,6 +96,6 @@ def matcher(**kwargs):
         
     proc_end_time=time.time()
 
-    print(f"Matcher ran for {proc_end_time - matcher_start_time} seconds, where finding hits took {matcher_end_time - matcher_start_time} seconds and processing the matches took {proc_end_time - proc_end_time} seconds.")
+    print(f"Matcher ran for {proc_end_time - matcher_start_time} seconds, where finding hits took {matcher_end_time - matcher_start_time} seconds and processing the matches took {proc_end_time - proc_start_time} seconds.")
     return poselist
 
