@@ -79,7 +79,15 @@ def matcher(**kwargs):
         resis = {}
         for line in ss.str().splitlines():
             if "REMARK 666" in line:
-                resis[line.strip().split()[-3]] = [line.strip().split()[-4], line.strip().split()[-2], line.strip().split()[-1]]
+                if f"{line.strip().split()[-3]}" in list(resis.keys()):
+                    if f"{line.strip().split()[-3]}.1" in list(resis.keys()):
+                        nextkey=max([int(str(x).split('.')[-1]) for x in list(resis.keys()) if int(x)==int(line.strip().split()[-3])])+1
+                        key=f"{line.strip().split()[-3]}.{str(nextkey)}"
+                    else:
+                        key=f"{line.strip().split()[-3]}.1"
+                else:
+                    key=f"{line.strip().split()[-3]}"
+                resis[key] = [line.strip().split()[-4], line.strip().split()[-2], line.strip().split()[-1]]
     
         return resis
 
@@ -90,7 +98,13 @@ def matcher(**kwargs):
             theozyme=get_theozyme_resis(matchedpose)
             matcher_data=json.dumps({"match_group":m, "theozyme":theozyme, "ligand":kwargs["-lig_name"], "scaffold":scaffold_name, "cst_file":pyrosetta.rosetta.basic.options.get_file_option("match:geometric_constraint_file"), "matchable_positions":pos})
             pyrosetta.rosetta.core.pose.setPoseExtraScore(matchedpose,"matcher_data",matcher_data)
-            poselist.append(matchedpose)
+            if "-packed" in kwargs.keys():
+                if kwargs["-packed"]=="true":
+                    poselist.append(pyrosetta.distributed.packed_pose.core.to_packed(matchedpose))
+                else:
+                    poselist.append(matchedpose)
+            else:
+                poselist.append(matchedpose)
     else:
         print("Matcher found no matches")
         
